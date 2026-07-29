@@ -1,0 +1,17 @@
+# Flask web application
+Flask>=3.0,<4.0
+flask-cors>=4.0,<7.0
+gunicorn>=22.0,<24.0
+
+# ML prediction and image processing
+tensorflow-cpu>=2.16,<2.22
+numpy>=1.26,<3.0
+Pillow>=10.4,<13.0
+pillow-heif>=0.21,<2.0
+matplotlib>=3.8,<4.0
+
+# AI assistant and report generation
+python-dotenv>=1.0,<2.0
+openai>=1.35,<3.0
+reportlab>=4.0,<6.0
+
