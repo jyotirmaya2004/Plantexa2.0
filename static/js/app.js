@@ -1,9 +1,10 @@
 /**
- * Plantexa AI Frontend Client Script
+ * Plantexa - Botanical Studio Frontend Controller
+ * Minimalist, elegant plant care and diagnosis interface.
+ * Zero emojis, zero technical jargon, fully accessible.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // API Base URL (Relative paths for unified full-stack Render deployment)
   const API_BASE_URL = '';
 
   // App State
@@ -14,147 +15,173 @@ document.addEventListener('DOMContentLoaded', () => {
     chatMessages: [
       {
         role: 'assistant',
-        content: '🌱 Hello! I am your Plantexa AI Agronomist. Ask me any question about crop diseases, soil care, fertilizers, or pest management!'
+        content: 'Hello! I am your AI Plant Assistant. How can I help with your crops, garden soil, or plant care today?'
       }
     ],
     userProfile: {
       name: 'Farmer Jyoti',
-      avatar: '🧑‍🌾'
+      avatar: 'farmer'
     },
     language: 'English',
     diseasesData: {}
   };
 
+  const AVATAR_ICONS = {
+    farmer: '<i class="fa-solid fa-tractor" aria-hidden="true"></i>',
+    gardener: '<i class="fa-solid fa-seedling" aria-hidden="true"></i>',
+    agronomist: '<i class="fa-solid fa-wheat-awn" aria-hidden="true"></i>',
+    enthusiast: '<i class="fa-solid fa-leaf" aria-hidden="true"></i>',
+    default: '<i class="fa-solid fa-user-doctor" aria-hidden="true"></i>'
+  };
+
   const i18n = {
     English: {
       htmlLang: 'en',
-      nav: ['Leaf Analysis', 'Knowledge Base', 'AI Assistant', 'About & Dataset'],
-      heroTitle: 'AI-Powered Crop Disease Diagnosis',
-      heroBody: 'Upload a leaf image to instantly validate leaf health, identify diseases with deep learning, and view Grad-CAM explainability heatmaps.',
-      uploadTitle: 'Upload Leaf Image',
-      openCamera: 'Open Camera',
-      closeCamera: 'Close Camera',
-      capturePhoto: 'Capture Photo',
+      nav: ['Diagnose', 'Plant Library', 'AI Assistant', 'Care Guide'],
+      heroEyebrow: 'Plant Health Diagnostic Studio',
+      heroTitle: 'Leaf Health & Care Diagnosis',
+      heroBody: 'Upload or capture a clear photo of an affected leaf to identify plant issues, explore natural treatments, and keep your garden thriving.',
+      uploadTitle: 'Leaf Photo',
+      modeUpload: 'Upload',
+      modeCamera: 'Camera',
+      dropPrompt: 'Drag a leaf photo here, or browse files',
+      dropSupport: 'Clear daylight photos work best (JPG, PNG, WEBP, HEIC)',
+      takePhoto: 'Take Photo',
       retakePhoto: 'Retake',
-      cameraNote: 'Use your device camera to capture a fresh leaf image, then analyze it instantly.',
-      analyzeButton: 'Analyze Leaf',
-      resultsTitle: 'Analysis Results',
-      resultPlaceholder: 'Upload a leaf photo and click Analyze Leaf to get instant diagnostic results.',
-      resultLoader: 'Evaluating leaf validity and classifying crop disease...',
-      topPredictions: 'Top 3 Predictions',
-      heatmapButton: 'View AI Attention Heatmap (Grad-CAM)',
+      analyzeButton: 'Check Plant Health',
+      resultsTitle: 'Health Assessment',
+      resultPlaceholderTitle: 'No Photo Selected',
+      resultPlaceholderText: 'Upload a leaf image or take a quick photo, then click Check Plant Health to see a diagnosis and care plan.',
+      resultLoader: 'Analyzing leaf health and symptoms...',
+      matchTitle: 'Condition Matches',
+      matchSubtitle: 'Likelihood comparison',
+      inspectAreasBtn: 'Inspect Affected Leaf Areas',
+      inspectCaption: 'Highlighted areas indicate foliage regions showing early signs of distress.',
       symptoms: 'Symptoms',
       causes: 'Causes',
-      treatment: 'Treatment & Management',
+      treatment: 'Treatment & Care',
       prevention: 'Prevention',
-      knowledgeTitle: 'Disease Knowledge Base',
-      knowledgeBody: 'Explore symptoms, cause analysis, and treatment guidelines for 38+ plant leaf diseases.',
-      knowledgeSearch: 'Search disease or crop (e.g. Potato, Apple, Blight)...',
-      assistantTitle: 'Plantexa AI Agronomist Assistant',
-      assistantBody: 'Ask tailored agriculture questions about crop health, soil treatment, fertilizers, and pest management.',
-      assistantGreeting: '🌱 Hello! I am your Plantexa AI Agronomist. Ask me any question about crop diseases, soil care, fertilizers, or pest management!',
-      chip1: 'How to identify leaf diseases?',
-      chip2: 'Common organic pest controls',
-      chip3: 'How to improve soil health?',
-      chatPlaceholder: 'Ask your agricultural question...',
+      downloadPdfCare: 'Download PDF Care Sheet',
+      askDoctor: 'Ask AI Assistant',
+      knowledgeTitle: 'Plant Library',
+      knowledgeBody: '',
+      knowledgeSearch: 'Search...',
+      assistantTitle: 'AI Assistant',
+      assistantBody: 'Ask questions about plant diseases, soil health, organic treatments, or watering schedules.',
+      assistantGreeting: 'Hello! I am your AI Plant Assistant. How can I help with your crops, garden soil, or plant care today?',
+      chip1: 'How to spot leaf distress early?',
+      chip2: 'Natural organic pest remedies',
+      chip3: 'How to improve soil vitality?',
+      chatPlaceholder: 'Ask a question about your plants or crops...',
       exportPdf: 'Export PDF',
-      clearChat: 'Clear',
-      profileTitle: 'User Profile & Context',
-      profileLabel: 'Name / Handle:',
-      profileAvatar: 'Avatar / Role:',
+      clearChat: 'Clear Chat',
+      profileTitle: 'Gardener Profile',
+      profileLabel: 'Your Name or Garden Handle',
+      profileRole: 'Your Role in the Garden',
       saveProfile: 'Save Profile',
-      diseaseModalTitle: 'Disease Details',
-      floatingChat: 'Open Plantexa AI Chatbot',
-      aboutTitle: 'About Plantexa AI'
+      diseaseModalTitle: 'Condition Details',
+      floatingChat: 'Chat with AI Assistant',
+      leafConfirmed: 'Leaf Identified',
+      leafUncertain: 'Check Photo Focus'
     },
     Hindi: {
       htmlLang: 'hi',
-      nav: ['पत्ती विश्लेषण', 'ज्ञान आधार', 'एआई सहायक', 'परिचय व डेटासेट'],
-      heroTitle: 'एआई-संचालित फसल रोग निदान',
-      heroBody: 'पत्ती की तस्वीर अपलोड करें, तुरंत स्वास्थ्य जांचें, रोग पहचानें, और Grad-CAM स्पष्टीकरण हीटमैप देखें।',
-      uploadTitle: 'पत्ती की छवि अपलोड करें',
-      openCamera: 'कैमरा खोलें',
-      closeCamera: 'कैमरा बंद करें',
-      capturePhoto: 'फोटो लें',
+      nav: ['निदान', 'पौधा पुस्तकालय', 'एआई सहायक', 'देखभाल गाइड'],
+      heroEyebrow: 'पौधा स्वास्थ्य निदान केंद्र',
+      heroTitle: 'पत्ती स्वास्थ्य व रोग निदान',
+      heroBody: 'पौधे की पत्ती का स्पष्ट फोटो लें या अपलोड करें ताकि बीमारी की तुरंत पहचान हो सके और प्राकृतिक उपचार मिल सके।',
+      uploadTitle: 'पत्ती का फोटो',
+      modeUpload: 'अपलोड',
+      modeCamera: 'कैमरा',
+      dropPrompt: 'पत्ती की तस्वीर यहाँ खींचें या फ़ाइल चुनें',
+      dropSupport: 'साफ़ दिन की रोशनी में ली गई तस्वीर सबसे अच्छी होती है (JPG, PNG, WEBP)',
+      takePhoto: 'फोटो लें',
       retakePhoto: 'फिर से लें',
-      cameraNote: 'ताज़ी पत्ती की छवि लेने के लिए डिवाइस कैमरा का उपयोग करें, फिर तुरंत विश्लेषण करें।',
-      analyzeButton: 'पत्ती का विश्लेषण करें',
-      resultsTitle: 'विश्लेषण परिणाम',
-      resultPlaceholder: 'एक पत्ती की फोटो अपलोड करें और तुरंत परिणाम पाने के लिए पत्ती का विश्लेषण करें पर क्लिक करें।',
-      resultLoader: 'पत्ती की वैधता जांची जा रही है और रोग वर्गीकृत किया जा रहा है...',
-      topPredictions: 'शीर्ष 3 अनुमान',
-      heatmapButton: 'एआई ध्यान हीटमैप देखें (Grad-CAM)',
+      analyzeButton: 'पौधे का स्वास्थ्य जाँचें',
+      resultsTitle: 'स्वास्थ्य रिपोर्ट',
+      resultPlaceholderTitle: 'कोई फोटो नहीं चुनी गई',
+      resultPlaceholderText: 'ऊपर पत्ती की फोटो अपलोड करें और तुरंत उपचार योजना देखने के लिए स्वास्थ्य जाँचें पर क्लिक करें।',
+      resultLoader: 'पत्ती के स्वास्थ्य व लक्षणों की जाँच की जा रही है...',
+      matchTitle: 'संभावित बीमारियाँ',
+      matchSubtitle: 'समानता प्रतिशत',
+      inspectAreasBtn: 'प्रभावित हिस्से देखें',
+      inspectCaption: 'उजागर किए गए हिस्से पत्ती में रोग के शुरुआती प्रभाव को दर्शाते हैं।',
       symptoms: 'लक्षण',
       causes: 'कारण',
-      treatment: 'उपचार और प्रबंधन',
-      prevention: 'रोकथाम',
-      knowledgeTitle: 'रोग ज्ञान आधार',
-      knowledgeBody: '38+ पौधों की पत्ती बीमारियों के लक्षण, कारण विश्लेषण और उपचार निर्देश देखें।',
-      knowledgeSearch: 'रोग या फसल खोजें (उदा. Potato, Apple, Blight)...',
-      assistantTitle: 'प्लांटेक्षा एआई कृषि सहायक',
-      assistantBody: 'फसल स्वास्थ्य, मिट्टी उपचार, उर्वरक और कीट प्रबंधन पर कृषि संबंधी प्रश्न पूछें।',
-      assistantGreeting: '🌱 नमस्ते! मैं आपका प्लांटेक्षा एआई कृषि सहायक हूँ। फसल रोग, मिट्टी, उर्वरक या कीट प्रबंधन के बारे में कुछ भी पूछें!',
-      chip1: 'पत्ती रोगों की पहचान कैसे करें?',
-      chip2: 'सामान्य जैविक कीट नियंत्रण',
-      chip3: 'मिट्टी का स्वास्थ्य कैसे सुधारें?',
-      chatPlaceholder: 'अपना कृषि प्रश्न पूछें...',
-      exportPdf: 'पीडीएफ निर्यात',
-      clearChat: 'साफ़ करें',
-      profileTitle: 'उपयोगकर्ता प्रोफ़ाइल और संदर्भ',
-      profileLabel: 'नाम / पहचान:',
-      profileAvatar: 'अवतार / भूमिका:',
+      treatment: 'उपचार व देखभाल',
+      prevention: 'बचाव के उपाय',
+      downloadPdfCare: 'देखभाल पत्रक PDF डाउनलोड करें',
+      askDoctor: 'एआई सहायक से पूछें',
+      knowledgeTitle: 'पौधा पुस्तकालय',
+      knowledgeBody: '',
+      knowledgeSearch: 'खोजें...',
+      assistantTitle: 'एआई सहायक',
+      assistantBody: 'फसल की देखभाल, जैविक खाद, कीट नियंत्रण या सिंचाई संबंधी प्रश्न पूछें।',
+      assistantGreeting: 'नमस्ते! मैं आपका एआई प्लांट सहायक हूँ। आज आपके बगीचे या खेत की देखभाल में कैसे मदद कर सकता हूँ?',
+      chip1: 'पत्ती के रोगों की जल्दी पहचान कैसे करें?',
+      chip2: 'कीटों से बचाव के प्राकृतिक जैविक उपाय',
+      chip3: 'मिट्टी की उर्वरता कैसे बढ़ाएँ?',
+      chatPlaceholder: 'पौधों की देखभाल संबंधी प्रश्न पूछें...',
+      exportPdf: 'PDF निर्यात',
+      clearChat: 'चैट साफ़ करें',
+      profileTitle: 'माली प्रोफ़ाइल',
+      profileLabel: 'आपका नाम या पहचान',
+      profileRole: 'बगीचे में आपकी भूमिका',
       saveProfile: 'प्रोफ़ाइल सहेजें',
-      diseaseModalTitle: 'रोग विवरण',
-      floatingChat: 'प्लांटेक्षा एआई चैटबॉट खोलें',
-      aboutTitle: 'प्लांटेक्षा एआई के बारे में'
+      diseaseModalTitle: 'रोग संबंधी जानकारी',
+      floatingChat: 'एआई सहायक से बातचीत करें',
+      leafConfirmed: 'पत्ती की पहचान सफल',
+      leafUncertain: 'फोटो पर फिर से फ़ोकस करें'
     },
     Odia: {
       htmlLang: 'or',
-      nav: ['ପତ୍ର ବିଶ୍ଲେଷଣ', 'ଜ୍ଞାନ ଆଧାର', 'AI ସହାୟକ', 'ବିବରଣୀ ଓ ଡାଟାସେଟ୍'],
-      heroTitle: 'AI-ଚାଳିତ ଫସଲ ରୋଗ ନିରୂପଣ',
-      heroBody: 'ପତ୍ରର ଫୋଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ, ସ୍ୱାସ୍ଥ୍ୟ ପରୀକ୍ଷା କରନ୍ତୁ, ରୋଗ ଚିହ୍ନଟ କରନ୍ତୁ ଏବଂ Grad-CAM ହୀଟମ୍ୟାପ୍ ଦେଖନ୍ତୁ।',
-      uploadTitle: 'ପତ୍ରର ଫୋଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ',
-      openCamera: 'କ୍ୟାମେରା ଖୋଲନ୍ତୁ',
-      closeCamera: 'କ୍ୟାମେରା ବନ୍ଦ କରନ୍ତୁ',
-      capturePhoto: 'ଫୋଟୋ ଉଠାନ୍ତୁ',
-      retakePhoto: 'ପୁଣି ଉଠାନ୍ତୁ',
-      cameraNote: 'ସଦ୍ୟ ପତ୍ରର ଫୋଟୋ ଉଠାଇବା ପାଇଁ କ୍ୟାମେରା ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ ତୁରନ୍ତ ବିଶ୍ଲେଷଣ କରନ୍ତୁ।',
-      analyzeButton: 'ପତ୍ର ବିଶ୍ଲେଷଣ କରନ୍ତୁ',
-      resultsTitle: 'ବିଶ୍ଲେଷଣ ଫଳାଫଳ',
-      resultPlaceholder: 'ଗୋଟିଏ ପତ୍ରର ଫୋଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ ଏବଂ ତୁରନ୍ତ ଫଳାଫଳ ପାଇବା ପାଇଁ ପତ୍ର ବିଶ୍ଲେଷଣ କରନ୍ତୁ କ୍ଲିକ୍ କରନ୍ତୁ।',
-      resultLoader: 'ପତ୍ରର ବୈଧତା ଏବଂ ରୋଗ ବର୍ଗୀକରଣ କରାଯାଉଛି...',
-      topPredictions: 'ଶୀର୍ଷ ୩ ଆକଳନ',
-      heatmapButton: 'AI ଧ୍ୟାନ ହୀଟମ୍ୟାପ୍ ଦେଖନ୍ତୁ (Grad-CAM)',
+      nav: ['ନିଦାନ', 'ଉଦ୍ଭିଦ ପୁସ୍ତକାଳୟ', 'AI ସହାୟକ', 'ଯତ୍ନ ଗାଇଡ୍'],
+      heroEyebrow: 'ଉଦ୍ଭିଦ ସ୍ୱାସ୍ଥ୍ୟ ନିରୂପଣ କେନ୍ଦ୍ର',
+      heroTitle: 'ପତ୍ର ସ୍ୱାସ୍ଥ୍ୟ ଓ ଯତ୍ନ ପରାମର୍ଶ',
+      heroBody: 'ପତ୍ରର ଏକ ସ୍ପଷ୍ଟ ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ କିମ୍ବା ଉଠାନ୍ତୁ, ଯାହାଦ୍ୱାରା ରୋଗ ଚିହ୍ନଟ ହୋଇ ପ୍ରାକୃତିକ ଉପଚାର ମିଳିପାରିବ।',
+      uploadTitle: 'ପତ୍ରର ଫଟୋ',
+      modeUpload: 'ଅପଲୋଡ୍',
+      modeCamera: 'କ୍ୟାମେରା',
+      dropPrompt: 'ପତ୍ର ଫଟୋ ଏଠାରେ ରଖନ୍ତୁ କିମ୍ବା ଫାଇଲ୍ ଚୟନ କରନ୍ତୁ',
+      dropSupport: 'ଦିନର ସ୍ପଷ୍ଟ ଆଲୋକରେ ଉଠାଯାଇଥିବା ଫଟୋ ଉତ୍ତମ ଫଳାଫଳ ଦିଏ',
+      takePhoto: 'ଫଟୋ ଉଠାନ୍ତୁ',
+      retakePhoto: 'ପୁନର୍ବାର ଉଠାନ୍ତୁ',
+      analyzeButton: 'ଗଛର ସ୍ୱାସ୍ଥ୍ୟ ପରୀକ୍ଷା କରନ୍ତୁ',
+      resultsTitle: 'ସ୍ୱାସ୍ଥ୍ୟ ରିପୋର୍ଟ',
+      resultPlaceholderTitle: 'କୌଣସି ଫଟୋ ଚୟନ ହୋଇନାହିଁ',
+      resultPlaceholderText: 'ଉପରେ ପତ୍ରର ଫଟୋ ଦିଅନ୍ତୁ ଏବଂ ଚିକିତ୍ସା ଯୋଜନା ପାଇବା ପାଇଁ ସ୍ୱାସ୍ଥ୍ୟ ପରୀକ୍ଷା କରନ୍ତୁ କ୍ଲିକ୍ କରନ୍ତୁ।',
+      resultLoader: 'ପତ୍ରର ସ୍ୱାସ୍ଥ୍ୟ ଓ ଲକ୍ଷଣ ଯାଞ୍ଚ କରାଯାଉଛି...',
+      matchTitle: 'ସମ୍ଭାବ୍ୟ ରୋଗ ସମୂହ',
+      matchSubtitle: 'ସମ୍ଭାବ୍ୟତା ତୁଳନା',
+      inspectAreasBtn: 'ପ୍ରଭାବିତ ପତ୍ର ଅଂଶ ଦେଖନ୍ତୁ',
+      inspectCaption: 'ଚିହ୍ନିତ ଅଂଶଗୁଡ଼ିକ ରୋଗର ପ୍ରାଥମିକ ପ୍ରଭାବ ଦର୍ଶାଏ।',
       symptoms: 'ଲକ୍ଷଣ',
       causes: 'କାରଣ',
       treatment: 'ଚିକିତ୍ସା ଓ ପରିଚାଳନା',
-      prevention: 'ନିବାରଣ ଉପାୟ',
-      knowledgeTitle: 'ରୋଗ ଜ୍ଞାନ ଆଧାର',
-      knowledgeBody: '୩୮+ ଫସଲ ରୋଗର ଲକ୍ଷଣ, କାରଣ ଏବଂ ଚିକିତ୍ସା ନିର୍ଦ୍ଦେଶାବଳୀ ଦେଖନ୍ତୁ।',
-      knowledgeSearch: 'ରୋଗ କିମ୍ବା ଫସଲ ସନ୍ଧାନ କରନ୍ତୁ (ଯେପରିକି Potato, Apple, Blight)...',
-      assistantTitle: 'Plantexa AI କୃଷି ସହାୟକ',
-      assistantBody: 'ଫସଲ ସ୍ୱାସ୍ଥ୍ୟ, ମୃତ୍ତିକା ଚିକିତ୍ସା, ସାର ଏବଂ କୀଟନାଶକ ପରିଚାଳନା ବିଷୟରେ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ।',
-      assistantGreeting: '🌱 ନମସ୍କାର! ମୁଁ ଆପଣଙ୍କର Plantexa AI କୃଷି ସହାୟକ। ଫସଲ ରୋଗ, ମୃତ୍ତିକା, ସାର କିମ୍ବା କୀଟ ପରିଚାଳନା ବିଷୟରେ ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ!',
-      chip1: 'ପତ୍ର ରୋଗ କିପରି ଚିହ୍ନଟ କରିବେ?',
-      chip2: 'ସାଧାରଣ ଜୈବିକ କୀଟ ନିୟନ୍ତ୍ରଣ',
-      chip3: 'ମୃତ୍ତିକାର ସ୍ୱାସ୍ଥ୍ୟ କିପରି ସୁଧାରିବେ?',
-      chatPlaceholder: 'ଆପଣଙ୍କର କୃଷି ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ...',
-      exportPdf: 'PDF ରପ୍ତାନି କରନ୍ତୁ',
-      clearChat: 'ସଫା କରନ୍ତୁ',
-      profileTitle: 'ବ୍ୟବହାରକାରୀ ପ୍ରୋଫାଇଲ୍',
-      profileLabel: 'ନାମ / ପରିଚୟ:',
-      profileAvatar: 'ଅବତାର / ଭୂମିକା:',
-      saveProfile: 'ପ୍ରୋଫାଇଲ୍ ସଞ୍ଚୟ କରନ୍ତୁ',
+      prevention: 'ପ୍ରତିରୋଧକ ଉପାୟ',
+      downloadPdfCare: 'ଯତ୍ନ ତାଲିକା PDF ଡାଉନଲୋଡ୍',
+      askDoctor: 'AI ସହାୟକଙ୍କୁ ପଚାରନ୍ତୁ',
+      knowledgeTitle: 'ଉଦ୍ଭିଦ ପୁସ୍ତକାଳୟ',
+      knowledgeBody: '',
+      knowledgeSearch: 'ସନ୍ଧାନ କରନ୍ତୁ...',
+      assistantTitle: 'AI ସହାୟକ',
+      assistantBody: 'ଫସଲ ଯତ୍ନ, ଜୈବିକ ସାର, କୀଟ ନିୟନ୍ତ୍ରଣ କିମ୍ବା ଜଳସେଚନ ବିଷୟରେ ପଚାରନ୍ତୁ।',
+      assistantGreeting: 'ନମସ୍କାର! ମୁଁ ଆପଣଙ୍କର AI ପ୍ଲାଣ୍ଟ ସହାୟକ। ଆଜି ଆପଣଙ୍କ ବଗିଚା କିମ୍ବା ଫସଲ ବିଷୟରେ କି ସାହାଯ୍ୟ କରିପାରିବି?',
+      chip1: 'ପତ୍ର ରୋଗ ଶୀଘ୍ର କିପରି ଚିହ୍ନିବେ?',
+      chip2: 'କୀଟ ନିୟନ୍ତ୍ରଣ ପାଇଁ ପ୍ରାକୃତିକ ଉପାୟ',
+      chip3: 'ମାଟିର ଉର୍ବରତା କିପରି ବୃଦ୍ଧି କରିବେ?',
+      chatPlaceholder: 'ଆପଣଙ୍କର ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ...',
+      exportPdf: 'PDF ରପ୍ତାନି',
+      clearChat: 'ଚାଟ୍ ସଫା କରନ୍ତୁ',
+      profileTitle: 'ଚାଷୀ ବା ମାଳି ପ୍ରୋଫାଇଲ୍',
+      profileLabel: 'ଆପଣଙ୍କ ନାମ',
+      profileRole: 'ଆପଣଙ୍କ ଭୂମିକା',
+      saveProfile: 'ସଞ୍ଚୟ କରନ୍ତୁ',
       diseaseModalTitle: 'ରୋଗ ବିବରଣୀ',
-      floatingChat: 'Plantexa AI ଚାଟବଟ୍ ଖୋଲନ୍ତୁ',
-      aboutTitle: 'Plantexa AI ବିଷୟରେ'
+      floatingChat: 'AI ସହାୟକଙ୍କ ସହ କଥା ହୁଅନ୍ତୁ',
+      leafConfirmed: 'ପତ୍ର ଚିହ୍ନଟ ସଫଳ',
+      leafUncertain: 'ଫଟୋର ଫୋକସ୍ ଯାଞ୍ଚ କରନ୍ତୁ'
     }
-  };
-
-  const languageMeta = {
-    English: 'English',
-    Hindi: 'Hindi',
-    Odia: 'Odia'
   };
 
   // DOM Elements
@@ -162,8 +189,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabPanes = document.querySelectorAll('.tab-pane');
   const languageSelect = document.getElementById('languageSelect');
   const mobileLanguageSelect = document.getElementById('mobileLanguageSelect');
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileNavDrawer = document.getElementById('mobileNavDrawer');
 
-  // File Upload Elements
+  // Input & Camera Elements
   const fileInput = document.getElementById('fileInput');
   const dropzone = document.getElementById('dropzone');
   const dropzonePrompt = document.getElementById('dropzonePrompt');
@@ -171,8 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const imagePreview = document.getElementById('imagePreview');
   const btnRemoveImage = document.getElementById('btnRemoveImage');
   const btnAnalyze = document.getElementById('btnAnalyze');
-  const btnOpenCamera = document.getElementById('btnOpenCamera');
-  const btnCloseCamera = document.getElementById('btnCloseCamera');
+  const btnModeFile = document.getElementById('btnModeFile');
+  const btnModeCamera = document.getElementById('btnModeCamera');
   const cameraPanel = document.getElementById('cameraPanel');
   const cameraVideo = document.getElementById('cameraVideo');
   const cameraCanvas = document.getElementById('cameraCanvas');
@@ -189,16 +218,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultContent = document.getElementById('resultContent');
   const diseaseNameDisplay = document.getElementById('diseaseNameDisplay');
   const confidenceValue = document.getElementById('confidenceValue');
+  const confidencePill = document.getElementById('confidencePill');
   const predictionsList = document.getElementById('predictionsList');
   const leafValidationBadge = document.getElementById('leafValidationBadge');
+  const lineChartSvg = document.getElementById('lineChartSvg');
 
-  // GradCAM Elements
+  // Visual Inspection Elements
   const gradcamBox = document.getElementById('gradcamBox');
   const btnToggleGradcam = document.getElementById('btnToggleGradcam');
   const gradcamPreview = document.getElementById('gradcamPreview');
   const gradcamImg = document.getElementById('gradcamImg');
 
-  // Disease Details Elements
+  // Care Plan Elements
+  const treatmentCard = document.getElementById('treatmentCard');
+  const treatmentPlaceholder = document.getElementById('treatmentPlaceholder');
+  const treatmentContent = document.getElementById('treatmentContent');
   const symptomsText = document.getElementById('symptomsText');
   const causesText = document.getElementById('causesText');
   const treatmentText = document.getElementById('treatmentText');
@@ -209,6 +243,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Knowledge Base Elements
   const knowledgeSearch = document.getElementById('knowledgeSearch');
   const knowledgeGrid = document.getElementById('knowledgeGrid');
+  const diseaseModal = document.getElementById('diseaseModal');
+  const btnCloseDiseaseModal = document.getElementById('btnCloseDiseaseModal');
+  const modalDiseaseTitle = document.getElementById('modalDiseaseTitle');
+  const modalDiseaseBody = document.getElementById('modalDiseaseBody');
 
   // Chat Elements
   const chatBody = document.getElementById('chatBody');
@@ -228,25 +266,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSaveProfile = document.getElementById('btnSaveProfile');
   const headerAvatar = document.getElementById('headerAvatar');
 
-  // Disease Modal Elements
-  const diseaseModal = document.getElementById('diseaseModal');
-  const btnCloseDiseaseModal = document.getElementById('btnCloseDiseaseModal');
-  const modalDiseaseTitle = document.getElementById('modalDiseaseTitle');
-  const modalDiseaseBody = document.getElementById('modalDiseaseBody');
+  let activeCameraStream = null;
 
   // --- Initial Setup ---
-  headerAvatar.textContent = state.userProfile.avatar;
-  usernameInput.value = state.userProfile.name;
+  updateHeaderAvatarDisplay();
+  if (usernameInput) {
+    usernameInput.value = state.userProfile.name;
+  }
   state.language = window.localStorage.getItem('plantexa_language') || state.language;
   if (languageSelect) languageSelect.value = state.language;
   if (mobileLanguageSelect) mobileLanguageSelect.value = state.language;
   applyLanguage(state.language);
   fetchDiseasesKnowledgeBase();
 
-  // --- Navigation Tabs & Mobile Drawer ---
-  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-  const mobileNavDrawer = document.getElementById('mobileNavDrawer');
+  function updateHeaderAvatarDisplay() {
+    if (!headerAvatar) return;
+    const iconHtml = AVATAR_ICONS[state.userProfile.avatar] || AVATAR_ICONS.default;
+    headerAvatar.innerHTML = iconHtml;
+  }
 
+  // --- Tab Navigation ---
   navTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const targetTab = tab.getAttribute('data-tab');
@@ -258,8 +297,20 @@ document.addEventListener('DOMContentLoaded', () => {
   function switchTab(tabId) {
     navTabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-tab') === tabId));
     tabPanes.forEach(pane => pane.classList.toggle('hidden', pane.id !== `tab-${tabId}`));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // --- Brand Logo (Redirect to Homepage Tab) ---
+  const brandLogo = document.getElementById('brandLogo');
+  if (brandLogo) {
+    brandLogo.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchTab('analysis');
+      closeMobileDrawer();
+    });
+  }
+
+  // --- Mobile Drawer ---
   if (mobileMenuBtn && mobileNavDrawer) {
     mobileMenuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -296,11 +347,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (close) close.classList.add('hidden');
   }
 
-  floatingChatBtn.addEventListener('click', () => {
-    switchTab('assistant');
-  });
+  if (floatingChatBtn) {
+    floatingChatBtn.addEventListener('click', () => {
+      switchTab('assistant');
+    });
+  }
 
-  // --- Language Selectors (Synced) ---
+  // --- Language Switching ---
   function handleLanguageChange(newLang) {
     state.language = newLang;
     window.localStorage.setItem('plantexa_language', state.language);
@@ -319,87 +372,113 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyLanguage(language) {
     const copy = i18n[language] || i18n.English;
     document.documentElement.lang = copy.htmlLang;
-    document.title = `Plantexa AI - ${copy.heroTitle}`;
+    document.title = `Plantexa - ${copy.heroTitle}`;
 
-    const navLabels = document.querySelectorAll('.nav-link');
-    navLabels.forEach((button, index) => {
-      const icon = button.querySelector('i');
-      button.childNodes.forEach(node => {
-        if (node.nodeType === Node.TEXT_NODE) node.remove();
-      });
-      if (icon) {
-        button.append(' ' + copy.nav[index]);
+    // Update navigation labels
+    const desktopNavBtns = document.querySelectorAll('#navTabs .nav-link');
+    desktopNavBtns.forEach((btn, index) => {
+      const span = btn.querySelector('span');
+      if (span && copy.nav[index]) {
+        span.textContent = copy.nav[index];
       }
     });
 
-    const heroBanner = document.querySelector('.hero-banner h2');
-    const heroText = document.querySelector('.hero-banner p');
-    const uploadTitle = document.querySelector('.upload-card .card-header h3');
-    const openCameraButton = document.getElementById('btnOpenCamera');
-    const closeCameraButton = document.getElementById('btnCloseCamera');
-    const capturePhotoButton = document.getElementById('btnCapturePhoto');
-    const retakePhotoButton = document.getElementById('btnRetakePhoto');
-    const cameraNote = document.querySelector('.camera-note');
-    const resultTitle = document.querySelector('.result-card .card-header h3');
-    const placeholderText = document.querySelector('#resultPlaceholder p');
-    const loaderText = document.querySelector('#resultLoader p');
-    const topPredictionTitle = document.querySelector('.top-predictions-box h4');
-    const heatmapButton = document.querySelector('#btnToggleGradcam');
-    const symptomsHeading = document.querySelector('#diseaseDetailsBox .detail-section:nth-child(1) h4');
-    const causesHeading = document.querySelector('#diseaseDetailsBox .detail-section:nth-child(2) h4');
-    const treatmentHeading = document.querySelector('#diseaseDetailsBox .detail-section:nth-child(3) h4');
-    const preventionHeading = document.querySelector('#diseaseDetailsBox .detail-section:nth-child(4) h4');
-    const knowledgeHeader = document.querySelector('#tab-knowledge .section-header h2');
-    const knowledgeBody = document.querySelector('#tab-knowledge .section-header p');
-    const searchInput = document.getElementById('knowledgeSearch');
-    const assistantHeader = document.querySelector('#tab-assistant .section-header h2');
-    const assistantBody = document.querySelector('#tab-assistant .section-header p');
-    const chatPlaceholder = document.getElementById('chatInput');
-    const exportPdfButton = document.getElementById('btnDownloadChatPdf');
-    const clearButton = document.getElementById('btnClearChat');
-    const profileHeader = document.querySelector('#profileModal .modal-header h3');
-    const profileLabel = document.querySelector('label[for="usernameInput"]');
-    const avatarLabel = document.querySelector('#avatarPicker').parentElement.querySelector('label');
-    const saveButton = document.getElementById('btnSaveProfile');
-    const diseaseModalHeader = document.getElementById('modalDiseaseTitle');
-    const floatingChatButton = document.getElementById('floatingChatBtn');
-    const aboutHeading = document.querySelector('#tab-about .card-header h3');
+    const mobileNavBtns = document.querySelectorAll('.mobile-nav-links .mobile-nav-link');
+    mobileNavBtns.forEach((btn, index) => {
+      const span = btn.querySelector('span');
+      if (span && copy.nav[index]) {
+        span.textContent = copy.nav[index];
+      }
+    });
 
-    if (heroBanner) heroBanner.textContent = copy.heroTitle;
-    if (heroText) heroText.textContent = copy.heroBody;
-    if (uploadTitle) uploadTitle.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> ${copy.uploadTitle}`;
-    if (openCameraButton) openCameraButton.innerHTML = `<i class="fa-solid fa-camera"></i> ${copy.openCamera}`;
-    if (closeCameraButton) closeCameraButton.innerHTML = `<i class="fa-solid fa-xmark"></i> ${copy.closeCamera}`;
-    if (capturePhotoButton) capturePhotoButton.innerHTML = `<i class="fa-solid fa-circle-dot"></i> ${copy.capturePhoto}`;
-    if (retakePhotoButton) retakePhotoButton.innerHTML = `<i class="fa-solid fa-rotate-right"></i> ${copy.retakePhoto}`;
-    if (cameraNote) cameraNote.textContent = copy.cameraNote;
-    if (resultTitle) resultTitle.innerHTML = `<i class="fa-solid fa-square-poll-vertical"></i> ${copy.resultsTitle}`;
-    if (placeholderText) placeholderText.textContent = copy.resultPlaceholder;
-    if (loaderText) loaderText.textContent = copy.resultLoader;
-    if (topPredictionTitle) topPredictionTitle.innerHTML = `<i class="fa-solid fa-list-ol"></i> ${copy.topPredictions}`;
-    if (heatmapButton) heatmapButton.innerHTML = `<i class="fa-solid fa-fire"></i> ${copy.heatmapButton}`;
-    if (symptomsHeading) symptomsHeading.innerHTML = `<i class="fa-solid fa-stethoscope"></i> ${copy.symptoms}`;
-    if (causesHeading) causesHeading.innerHTML = `<i class="fa-solid fa-virus"></i> ${copy.causes}`;
-    if (treatmentHeading) treatmentHeading.innerHTML = `<i class="fa-solid fa-pills"></i> ${copy.treatment}`;
-    if (preventionHeading) preventionHeading.innerHTML = `<i class="fa-solid fa-shield-halved"></i> ${copy.prevention}`;
-    if (knowledgeHeader) knowledgeHeader.textContent = copy.knowledgeTitle;
-    if (knowledgeBody) knowledgeBody.textContent = copy.knowledgeBody;
-    if (searchInput) searchInput.placeholder = copy.knowledgeSearch;
-    if (assistantHeader) assistantHeader.textContent = copy.assistantTitle;
-    if (assistantBody) assistantBody.textContent = copy.assistantBody;
-    if (chatPlaceholder) chatPlaceholder.placeholder = copy.chatPlaceholder;
-    if (exportPdfButton) exportPdfButton.innerHTML = `<i class="fa-solid fa-download"></i> ${copy.exportPdf}`;
-    if (clearButton) clearButton.innerHTML = `<i class="fa-solid fa-trash"></i> ${copy.clearChat}`;
-    if (profileHeader) profileHeader.textContent = copy.profileTitle;
-    if (profileLabel) profileLabel.textContent = copy.profileLabel;
-    if (avatarLabel) avatarLabel.textContent = copy.profileAvatar;
-    if (saveButton) saveButton.textContent = copy.saveProfile;
-    if (diseaseModalHeader) diseaseModalHeader.textContent = copy.diseaseModalTitle;
-    if (floatingChatButton) floatingChatButton.title = copy.floatingChat;
-    if (aboutHeading) aboutHeading.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${copy.aboutTitle}`;
+    // Update Banner / Hero
+    const eyebrow = document.querySelector('#tab-analysis .intro-eyebrow, #tab-analysis .hero-badge');
+    const title = document.querySelector('#tab-analysis .intro-title');
+    const desc = document.querySelector('#tab-analysis .intro-description');
+    if (eyebrow) eyebrow.textContent = copy.heroEyebrow;
+    if (title) title.textContent = copy.heroTitle;
+    if (desc) desc.textContent = copy.heroBody;
 
-    const chatGreeting = document.querySelector('#chatBody .assistant-message .message-content');
-    if (chatGreeting && state.chatMessages.length === 1) {
+    // Mode Toggle Buttons
+    const btnFileSpan = btnModeFile?.querySelector('span');
+    const btnCameraSpan = btnModeCamera?.querySelector('span');
+    if (btnFileSpan) btnFileSpan.textContent = copy.modeUpload;
+    if (btnCameraSpan) btnCameraSpan.textContent = copy.modeCamera;
+
+    // Dropzone text
+    const dropText = document.querySelector('.drop-text');
+    const supportText = document.querySelector('.supported-formats');
+    if (dropText) {
+      dropText.innerHTML = `${copy.dropPrompt.split(',')[0]}, or <span class="browse-link">${copy.dropPrompt.split(',')[1] || 'browse'}</span>`;
+    }
+    if (supportText) supportText.textContent = copy.dropSupport;
+
+    // Analyze Button
+    const analyzeSpan = btnAnalyze?.querySelector('span');
+    if (analyzeSpan) analyzeSpan.textContent = copy.analyzeButton;
+
+    // Result placeholder & loader
+    const placeH4 = document.querySelector('#resultPlaceholder h4');
+    const placeP = document.querySelector('#resultPlaceholder p');
+    const loaderP = document.querySelector('#resultLoader p');
+    if (placeH4) placeH4.textContent = copy.resultPlaceholderTitle;
+    if (placeP) placeP.textContent = copy.resultPlaceholderText;
+    if (loaderP) loaderP.textContent = copy.resultLoader;
+
+    // Match section headers
+    const matchH4 = document.querySelector('.top-predictions-box h4, .box-title-row h4');
+    const matchSub = document.querySelector('.box-subtitle');
+    if (matchH4) matchH4.textContent = copy.matchTitle;
+    if (matchSub) matchSub.textContent = copy.matchSubtitle;
+
+    // Affected areas inspection button
+    const inspectSpan = btnToggleGradcam?.querySelector('span');
+    const inspectCap = document.querySelector('.gradcam-caption');
+    if (inspectSpan) inspectSpan.textContent = copy.inspectAreasBtn;
+    if (inspectCap) inspectCap.textContent = copy.inspectCaption;
+
+    // Knowledge Base tab
+    const kbTitle = document.querySelector('#tab-knowledge .intro-title');
+    const kbDesc = document.querySelector('#tab-knowledge .intro-description');
+    if (kbTitle) kbTitle.textContent = copy.knowledgeTitle;
+    if (kbDesc) {
+      if (copy.knowledgeBody) {
+        kbDesc.textContent = copy.knowledgeBody;
+        kbDesc.style.display = '';
+      } else {
+        kbDesc.textContent = '';
+        kbDesc.style.display = 'none';
+      }
+    }
+    if (knowledgeSearch) knowledgeSearch.placeholder = copy.knowledgeSearch || 'Search...';
+
+    // Plant Doctor Assistant tab
+    const chatTitle = document.querySelector('#tab-assistant .intro-title');
+    const chatDesc = document.querySelector('#tab-assistant .intro-description');
+    if (chatTitle) chatTitle.textContent = copy.assistantTitle;
+    if (chatDesc) chatDesc.textContent = copy.assistantBody;
+    if (chatInput) chatInput.placeholder = copy.chatPlaceholder;
+
+    // Chat Export & Clear
+    const expSpan = btnDownloadChatPdf?.querySelector('span');
+    const clrSpan = btnClearChat?.querySelector('span');
+    if (expSpan) expSpan.textContent = copy.exportPdf;
+    if (clrSpan) clrSpan.textContent = copy.clearChat;
+
+    // Profile modal
+    const profH3 = document.getElementById('profileModalTitle');
+    const profLabel1 = document.querySelector('label[for="usernameInput"]');
+    if (profH3) profH3.textContent = copy.profileTitle;
+    if (profLabel1) profLabel1.textContent = copy.profileLabel;
+
+    // Care plan action buttons
+    const downRepSpan = btnDownloadReport?.querySelector('span');
+    const askDocSpan = btnAskAssistant?.querySelector('span');
+    if (downRepSpan) downRepSpan.textContent = copy.downloadPdfCare;
+    if (askDocSpan) askDocSpan.textContent = copy.askDoctor;
+
+    // Chat initial greeting
+    if (state.chatMessages.length === 1 && state.chatMessages[0].role === 'assistant') {
       state.chatMessages[0].content = copy.assistantGreeting;
       renderChatMessages();
     }
@@ -409,69 +488,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderStaticChips(copy) {
     if (!chatChips) return;
-    const chipLabels = [copy.chip1, copy.chip2, copy.chip3];
-    const chipQueries = [
-      'How to identify early stage leaf diseases?',
-      'What are the best natural pest control methods?',
-      'How to improve soil nitrogen and organic matter?'
+    const chips = [
+      { label: copy.chip1, query: 'How to spot leaf distress early?' },
+      { label: copy.chip2, query: 'Natural organic pest remedies for garden plants' },
+      { label: copy.chip3, query: 'How to improve soil nutrients naturally?' }
     ];
 
     chatChips.innerHTML = '';
-    chipLabels.forEach((label, index) => {
+    chips.forEach(item => {
       const btn = document.createElement('button');
       btn.className = 'chip-btn';
-      btn.setAttribute('data-query', chipQueries[index]);
-      btn.textContent = label;
+      btn.setAttribute('type', 'button');
+      btn.setAttribute('data-query', item.query);
+      btn.textContent = item.label;
       chatChips.appendChild(btn);
     });
   }
 
-  let activeCameraStream = null;
-
-  async function openCamera() {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      alert('Camera access is not supported in this browser.');
-      return;
-    }
-
-    try {
-      activeCameraStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' } },
-        audio: false
-      });
-      cameraVideo.srcObject = activeCameraStream;
-      dropzonePrompt.classList.add('hidden');
-      previewContainer.classList.add('hidden');
-      cameraPanel.classList.remove('hidden');
-      if (fileInput) fileInput.style.pointerEvents = 'none';
-    } catch (err) {
-      alert('Camera access is blocked or unavailable on this device.');
-    }
-  }
-
-  function closeCamera() {
-    if (activeCameraStream) {
-      activeCameraStream.getTracks().forEach(track => track.stop());
-      activeCameraStream = null;
-    }
-    if (cameraVideo) {
-      cameraVideo.srcObject = null;
-    }
-    if (cameraPanel) {
-      cameraPanel.classList.add('hidden');
-    }
-    if (fileInput) fileInput.style.pointerEvents = 'auto';
-    if (!state.selectedFile) {
-      dropzonePrompt.classList.remove('hidden');
-    } else {
-      previewContainer.classList.remove('hidden');
-    }
-  }
-
-  // --- Upper Right Input Mode Toggle (File Upload vs Camera) ---
-  const btnModeFile = document.getElementById('btnModeFile');
-  const btnModeCamera = document.getElementById('btnModeCamera');
-
+  // --- Input Mode Toggle (File Upload vs Camera) ---
   if (btnModeFile && btnModeCamera) {
     btnModeFile.addEventListener('click', () => {
       btnModeFile.classList.add('active');
@@ -486,24 +520,49 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- File Upload & Dropzone ---
-  fileInput.addEventListener('change', (e) => {
-    if (e.target.files && e.target.files[0]) {
-      handleFileSelected(e.target.files[0]);
+  async function openCamera() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert('Camera access is not supported by your browser.');
+      return;
     }
-  });
 
-  if (btnOpenCamera) {
-    btnOpenCamera.addEventListener('click', openCamera);
+    try {
+      activeCameraStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' } },
+        audio: false
+      });
+      if (cameraVideo) {
+        cameraVideo.srcObject = activeCameraStream;
+      }
+      dropzonePrompt?.classList.add('hidden');
+      previewContainer?.classList.add('hidden');
+      cameraPanel?.classList.remove('hidden');
+      if (fileInput) fileInput.style.pointerEvents = 'none';
+    } catch (err) {
+      alert('Camera is unavailable or access was denied.');
+      btnModeFile?.click();
+    }
   }
 
-  if (btnCloseCamera) {
-    btnCloseCamera.addEventListener('click', closeCamera);
+  function closeCamera() {
+    if (activeCameraStream) {
+      activeCameraStream.getTracks().forEach(track => track.stop());
+      activeCameraStream = null;
+    }
+    if (cameraPanel) cameraPanel.classList.add('hidden');
+    if (fileInput) fileInput.style.pointerEvents = 'auto';
+
+    if (!state.selectedFile) {
+      dropzonePrompt?.classList.remove('hidden');
+    } else {
+      previewContainer?.classList.remove('hidden');
+    }
   }
 
+  // Camera Capture & Retake
   if (btnCapturePhoto) {
     btnCapturePhoto.addEventListener('click', () => {
-      if (!cameraVideo.videoWidth || !cameraVideo.videoHeight) return;
+      if (!cameraVideo?.videoWidth || !cameraVideo?.videoHeight) return;
 
       cameraCanvas.width = cameraVideo.videoWidth;
       cameraCanvas.height = cameraVideo.videoHeight;
@@ -512,7 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       cameraCanvas.toBlob((blob) => {
         if (!blob) return;
-        const capturedFile = new File([blob], `plantexa_camera_${Date.now()}.jpg`, { type: 'image/jpeg' });
+        const capturedFile = new File([blob], `plantexa_leaf_${Date.now()}.jpg`, { type: 'image/jpeg' });
         handleFileSelected(capturedFile);
         closeCamera();
       }, 'image/jpeg', 0.92);
@@ -521,405 +580,318 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnRetakePhoto) {
     btnRetakePhoto.addEventListener('click', () => {
-      state.selectedFile = null;
-      fileInput.value = '';
-      imagePreview.src = '';
-      previewContainer.classList.add('hidden');
-      dropzonePrompt.classList.remove('hidden');
-      btnAnalyze.disabled = true;
-      if (!cameraPanel.classList.contains('hidden')) {
-        openCamera();
+      clearSelectedPhoto();
+      openCamera();
+    });
+  }
+
+  // File Input and Drag & Drop
+  if (fileInput) {
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleFileSelected(e.target.files[0]);
       }
     });
   }
 
-  ['dragenter', 'dragover'].forEach(eventName => {
-    dropzone.addEventListener(eventName, (e) => {
-      e.preventDefault();
-      dropzone.classList.add('dragover');
+  if (dropzone) {
+    ['dragenter', 'dragover'].forEach(name => {
+      dropzone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      });
     });
-  });
 
-  ['dragleave', 'drop'].forEach(eventName => {
-    dropzone.addEventListener(eventName, (e) => {
-      e.preventDefault();
-      dropzone.classList.remove('dragover');
+    ['dragleave', 'drop'].forEach(name => {
+      dropzone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+      });
     });
-  });
 
-  dropzone.addEventListener('drop', (e) => {
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileSelected(e.dataTransfer.files[0]);
-    }
-  });
+    dropzone.addEventListener('drop', (e) => {
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleFileSelected(e.dataTransfer.files[0]);
+      }
+    });
+  }
 
   function handleFileSelected(file) {
     state.selectedFile = file;
     const reader = new FileReader();
     reader.onload = (e) => {
-      imagePreview.src = e.target.result;
+      if (imagePreview) imagePreview.src = e.target.result;
       state.currentImageBase64 = e.target.result;
-      dropzonePrompt.classList.add('hidden');
-      previewContainer.classList.remove('hidden');
-      btnAnalyze.disabled = false;
+      dropzonePrompt?.classList.add('hidden');
+      previewContainer?.classList.remove('hidden');
+      if (btnAnalyze) btnAnalyze.disabled = false;
     };
     reader.readAsDataURL(file);
   }
 
-  btnRemoveImage.addEventListener('click', (e) => {
-    e.stopPropagation();
+  function clearSelectedPhoto() {
     state.selectedFile = null;
-    fileInput.value = '';
-    imagePreview.src = '';
-    previewContainer.classList.add('hidden');
-    dropzonePrompt.classList.remove('hidden');
-    btnAnalyze.disabled = true;
+    state.currentImageBase64 = null;
+    if (fileInput) fileInput.value = '';
+    if (imagePreview) imagePreview.src = '';
+    previewContainer?.classList.add('hidden');
+    dropzonePrompt?.classList.remove('hidden');
+    if (btnAnalyze) btnAnalyze.disabled = true;
 
-    const treatmentPlaceholder = document.getElementById('treatmentPlaceholder');
-    const treatmentContent = document.getElementById('treatmentContent');
+    if (treatmentCard) treatmentCard.classList.add('hidden');
     if (treatmentContent) treatmentContent.classList.add('hidden');
-    if (treatmentPlaceholder) treatmentPlaceholder.classList.remove('hidden');
+    if (treatmentPlaceholder) treatmentPlaceholder.classList.add('hidden');
+    if (resultContent) resultContent.classList.add('hidden');
+    if (resultPlaceholder) resultPlaceholder.classList.remove('hidden');
+    if (resultError) resultError.classList.add('hidden');
+    if (resultWarning) resultWarning.classList.add('hidden');
+  }
 
-    resultContent.classList.add('hidden');
-    resultPlaceholder.classList.remove('hidden');
-  });
+  if (btnRemoveImage) {
+    btnRemoveImage.addEventListener('click', (e) => {
+      e.stopPropagation();
+      clearSelectedPhoto();
+    });
+  }
 
-  // --- Image Analysis ---
-  btnAnalyze.addEventListener('click', async () => {
-    if (!state.selectedFile) return;
+  // --- Plant Health Analysis Execution ---
+  if (btnAnalyze) {
+    btnAnalyze.addEventListener('click', async () => {
+      if (!state.selectedFile) return;
 
-    resultPlaceholder.classList.add('hidden');
-    resultError.classList.add('hidden');
-    resultWarning.classList.add('hidden');
-    resultContent.classList.add('hidden');
-    resultLoader.classList.remove('hidden');
+      resultPlaceholder?.classList.add('hidden');
+      resultError?.classList.add('hidden');
+      resultWarning?.classList.add('hidden');
+      resultContent?.classList.add('hidden');
+      resultLoader?.classList.remove('hidden');
 
-    const formData = new FormData();
-    formData.append('file', state.selectedFile);
+      const formData = new FormData();
+      formData.append('file', state.selectedFile);
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/predict`, {
-        method: 'POST',
-        body: formData
-      });
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/predict`, {
+          method: 'POST',
+          body: formData
+        });
 
-      const res = await response.json();
-      resultLoader.classList.add('hidden');
+        const res = await response.json();
+        resultLoader?.classList.add('hidden');
 
-      if (!response.ok || !res.success) {
-        errorMessage.textContent = res.error || 'Prediction failed.';
-        resultError.classList.remove('hidden');
-        return;
+        if (!response.ok || !res.success) {
+          if (errorMessage) errorMessage.textContent = res.error || 'Diagnosis failed. Please try a clearer leaf photo.';
+          resultError?.classList.remove('hidden');
+          return;
+        }
+
+        renderPredictionResults(res.data, res.disease_info);
+      } catch (err) {
+        resultLoader?.classList.add('hidden');
+        if (errorMessage) errorMessage.textContent = 'Network connection error. Please try again.';
+        resultError?.classList.remove('hidden');
       }
+    });
+  }
 
-      renderPredictionResults(res.data, res.disease_info);
-    } catch (err) {
-      resultLoader.classList.add('hidden');
-      errorMessage.textContent = `Network error: ${err.message}`;
-      resultError.classList.remove('hidden');
-    }
-  });
-
-  function getConfidenceTheme(percentage) {
-    if (percentage >= 90) {
+  function getMatchTheme(percentage) {
+    if (percentage >= 85) {
       return {
-        bg: '#ecfdf5',
-        text: '#047857',
-        border: '#a7f3d0',
-        barGradient: 'linear-gradient(90deg, #10b981, #047857)'
+        bg: '#f0f9f4',
+        text: '#1b4332',
+        border: '#b7e4c7',
+        bar: '#2d6a4f'
       };
-    } else if (percentage >= 70) {
+    } else if (percentage >= 60) {
       return {
-        bg: '#fff7ed',
-        text: '#c2410c',
-        border: '#ffedd5',
-        barGradient: 'linear-gradient(90deg, #f97316, #ea580c)'
-      };
-    } else if (percentage >= 50) {
-      return {
-        bg: '#fefce8',
-        text: '#854d0e',
-        border: '#fef08a',
-        barGradient: 'linear-gradient(90deg, #eab308, #ca8a04)'
+        bg: '#fdf8eb',
+        text: '#966914',
+        border: '#f8e5b8',
+        bar: '#d97706'
       };
     } else {
       return {
-        bg: '#fef2f2',
-        text: '#b91c1c',
-        border: '#fecaca',
-        barGradient: 'linear-gradient(90deg, #ef4444, #dc2626)'
+        bg: '#fdf2f0',
+        text: '#a83b24',
+        border: '#fad5ce',
+        bar: '#b2533e'
       };
     }
   }
 
-  function animateConfidence(targetPercentage, confTheme) {
-    const confidencePill = document.getElementById('confidencePill');
-    const confValEl = document.getElementById('confidenceValue');
-
+  function animateConfidence(targetPercentage, theme) {
     if (confidencePill) {
-      confidencePill.style.backgroundColor = confTheme.bg;
-      confidencePill.style.borderColor = confTheme.border;
+      confidencePill.style.backgroundColor = theme.bg;
+      confidencePill.style.borderColor = theme.border;
     }
 
-    if (confValEl) {
-      confValEl.style.color = confTheme.text;
-      let startTimestamp = null;
-      const duration = 1200;
+    if (confidenceValue) {
+      confidenceValue.style.color = theme.text;
+      let start = null;
+      const duration = 1000;
 
       function step(timestamp) {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const easedProgress = 1 - Math.pow(1 - progress, 3);
-        const currentValue = easedProgress * targetPercentage;
-        confValEl.textContent = `${currentValue.toFixed(1)}%`;
+        if (!start) start = timestamp;
+        const elapsed = timestamp - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const current = ease * targetPercentage;
+        confidenceValue.textContent = `${current.toFixed(1)}%`;
         if (progress < 1) {
           window.requestAnimationFrame(step);
         }
       }
-
       window.requestAnimationFrame(step);
     }
-  }
-
-  function renderLineGraph(topPredictions) {
-    const svg = document.getElementById('lineChartSvg');
-    if (!svg || !topPredictions || topPredictions.length === 0) return;
-
-    const width = 380;
-    const height = 140;
-    const paddingLeft = 48;
-    const paddingRight = 48;
-    const paddingTop = 28;
-    const paddingBottom = 32;
-
-    const chartWidth = width - paddingLeft - paddingRight;
-    const chartHeight = height - paddingTop - paddingBottom;
-
-    const count = topPredictions.length;
-    const points = topPredictions.map((pred, i) => {
-      const x = count === 1 ? width / 2 : paddingLeft + (i / (count - 1)) * chartWidth;
-      const conf = Math.max(0, Math.min(100, pred.confidence));
-      const y = paddingTop + chartHeight - (conf / 100) * chartHeight;
-      const theme = getConfidenceTheme(conf);
-      return { x, y, conf, disease: pred.disease, theme, index: i + 1 };
-    });
-
-    let pathD = `M ${points[0].x} ${points[0].y}`;
-    if (points.length > 1) {
-      for (let i = 0; i < points.length - 1; i++) {
-        const curr = points[i];
-        const next = points[i + 1];
-        const cp1x = curr.x + (next.x - curr.x) / 2;
-        const cp1y = curr.y;
-        const cp2x = curr.x + (next.x - curr.x) / 2;
-        const cp2y = next.y;
-        pathD += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${next.x} ${next.y}`;
-      }
-    }
-
-    const firstX = points[0].x;
-    const lastX = points[points.length - 1].x;
-    const bottomY = paddingTop + chartHeight;
-    const areaD = `${pathD} L ${lastX} ${bottomY} L ${firstX} ${bottomY} Z`;
-
-    let svgContent = `
-      <defs>
-        <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="${points[0].theme.text}" />
-          <stop offset="100%" stop-color="${points[points.length - 1].theme.text}" />
-        </linearGradient>
-        <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="${points[0].theme.text}" stop-opacity="0.28" />
-          <stop offset="100%" stop-color="${points[0].theme.text}" stop-opacity="0.01" />
-        </linearGradient>
-      </defs>
-
-      <!-- Horizontal Grid Lines -->
-      <line x1="${paddingLeft}" y1="${paddingTop}" x2="${width - paddingRight}" y2="${paddingTop}" stroke="#e2e8f0" stroke-dasharray="3,3" />
-      <text x="${paddingLeft - 8}" y="${paddingTop + 3}" fill="#94a3b8" font-size="9" text-anchor="end">100%</text>
-
-      <line x1="${paddingLeft}" y1="${paddingTop + chartHeight / 2}" x2="${width - paddingRight}" y2="${paddingTop + chartHeight / 2}" stroke="#f1f5f9" stroke-dasharray="3,3" />
-      <text x="${paddingLeft - 8}" y="${paddingTop + chartHeight / 2 + 3}" fill="#94a3b8" font-size="9" text-anchor="end">50%</text>
-
-      <line x1="${paddingLeft}" y1="${bottomY}" x2="${width - paddingRight}" y2="${bottomY}" stroke="#e2e8f0" />
-      <text x="${paddingLeft - 8}" y="${bottomY + 3}" fill="#94a3b8" font-size="9" text-anchor="end">0%</text>
-
-      <!-- Area Fill -->
-      <path d="${areaD}" fill="url(#areaGrad)" />
-
-      <!-- Smooth Bezier Line -->
-      <path d="${pathD}" fill="none" stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round" />
-    `;
-
-    points.forEach(pt => {
-      svgContent += `
-        <!-- X Axis Rank Label -->
-        <text x="${pt.x}" y="${bottomY + 16}" fill="#64748b" font-size="9.5" font-weight="700" text-anchor="middle">Rank #${pt.index}</text>
-
-        <!-- Point Node Circle -->
-        <circle cx="${pt.x}" cy="${pt.y}" r="6" fill="#ffffff" stroke="${pt.theme.text}" stroke-width="3" />
-        <circle cx="${pt.x}" cy="${pt.y}" r="2.5" fill="${pt.theme.text}" />
-
-        <!-- Percentage Label Tag Above Point -->
-        <rect x="${pt.x - 22}" y="${Math.max(2, pt.y - 23)}" width="44" height="15" rx="7.5" fill="${pt.theme.bg}" stroke="${pt.theme.border}" stroke-width="1" />
-        <text x="${pt.x}" y="${Math.max(13, pt.y - 12)}" fill="${pt.theme.text}" font-size="9" font-weight="800" text-anchor="middle">${pt.conf.toFixed(1)}%</text>
-      `;
-    });
-
-    svg.innerHTML = svgContent;
   }
 
   function renderPredictionResults(data, info) {
     state.currentPrediction = data;
     state.currentDiseaseInfo = info;
 
-    diseaseNameDisplay.textContent = data.disease;
+    const copy = i18n[state.language] || i18n.English;
 
-    // Dynamic color theme based on confidence percentage
-    const mainConfTheme = getConfidenceTheme(data.confidence);
-    animateConfidence(data.confidence, mainConfTheme);
-
-    if (data.leaf_validation && data.leaf_validation.is_leaf) {
-      leafValidationBadge.textContent = 'Leaf Validated';
-      leafValidationBadge.style.background = '#ecfdf5';
-      leafValidationBadge.style.color = '#047857';
-      leafValidationBadge.style.border = '1px solid #a7f3d0';
-    } else {
-      leafValidationBadge.textContent = 'Borderline Validation';
-      leafValidationBadge.style.background = '#fffbeb';
-      leafValidationBadge.style.color = '#b45309';
-      leafValidationBadge.style.border = '1px solid #fde68a';
+    if (diseaseNameDisplay) {
+      diseaseNameDisplay.textContent = data.disease;
     }
 
-    if (data.validation_warning) {
+    const theme = getMatchTheme(data.confidence);
+    animateConfidence(data.confidence, theme);
+
+    if (leafValidationBadge) {
+      if (data.leaf_validation && data.leaf_validation.is_leaf) {
+        leafValidationBadge.textContent = copy.leafConfirmed;
+        leafValidationBadge.style.backgroundColor = 'var(--sage-light)';
+        leafValidationBadge.style.color = 'var(--forest-primary)';
+        leafValidationBadge.style.borderColor = 'var(--sage-border)';
+      } else {
+        leafValidationBadge.textContent = copy.leafUncertain;
+        leafValidationBadge.style.backgroundColor = 'var(--ochre-bg)';
+        leafValidationBadge.style.color = 'var(--ochre-text)';
+        leafValidationBadge.style.borderColor = 'var(--ochre-border)';
+      }
+    }
+
+    if (data.validation_warning && warningMessage && resultWarning) {
       warningMessage.textContent = data.validation_warning;
       resultWarning.classList.remove('hidden');
     }
 
-    // Render Probabilities SVG Line Graph
-    if (data.top_predictions) {
-      renderLineGraph(data.top_predictions);
-    }
-
-    // Predictions list with percentage-based color themes & smooth progress bar fill animation
-    predictionsList.innerHTML = '';
-    if (data.top_predictions) {
+    // Render Clean Matches List (Zero Horizontal Bars)
+    if (predictionsList && data.top_predictions) {
+      predictionsList.innerHTML = '';
       data.top_predictions.forEach(pred => {
-        const predTheme = getConfidenceTheme(pred.confidence);
+        const itemTheme = getMatchTheme(pred.confidence);
         const item = document.createElement('div');
         item.className = 'pred-item';
         item.innerHTML = `
-          <div class="pred-info">
-            <span>${pred.disease}</span>
-            <span style="color: ${predTheme.text}; font-weight: 700;">${pred.confidence.toFixed(1)}%</span>
-          </div>
-          <div class="pred-bar-bg">
-            <div class="pred-bar-fill" style="width: 0%; background: ${predTheme.barGradient}; transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);"></div>
-          </div>
+          <span class="pred-item-title">${pred.disease}</span>
+          <span class="pred-item-badge" style="background-color: ${itemTheme.bg}; color: ${itemTheme.text};">
+            ${pred.confidence.toFixed(1)}% match
+          </span>
         `;
         predictionsList.appendChild(item);
-
-        setTimeout(() => {
-          const fill = item.querySelector('.pred-bar-fill');
-          if (fill) fill.style.width = `${Math.min(pred.confidence, 100)}%`;
-        }, 60);
       });
     }
 
-    // GradCAM
-    if (data.gradcam_b64) {
+    // Key Affected Areas (Grad-CAM)
+    if (data.gradcam_b64 && gradcamImg && gradcamBox) {
       gradcamImg.src = `data:image/jpeg;base64,${data.gradcam_b64}`;
       gradcamBox.classList.remove('hidden');
-    } else {
+    } else if (gradcamBox) {
       gradcamBox.classList.add('hidden');
     }
 
-    // Unhide Treatment Content
-    const treatmentPlaceholder = document.getElementById('treatmentPlaceholder');
-    const treatmentContent = document.getElementById('treatmentContent');
-
+    // Populate Care & Treatment Plan
     if (info) {
-      symptomsText.textContent = info.symptoms || 'Not available';
-      causesText.textContent = info.causes || 'Not available';
-      treatmentText.textContent = info.treatment || 'Not available';
-      preventionText.textContent = info.prevention || 'Not available';
+      if (symptomsText) symptomsText.textContent = info.symptoms || 'Regular monitoring recommended.';
+      if (causesText) causesText.textContent = info.causes || 'Environmental moisture or fungal spores.';
+      if (treatmentText) treatmentText.textContent = info.treatment || 'Prune affected leaves and apply organic copper or neem spray.';
+      if (preventionText) preventionText.textContent = info.prevention || 'Water at the soil base and allow adequate space between plants.';
     } else {
-      symptomsText.textContent = 'Standard leaf monitoring recommended.';
-      causesText.textContent = 'Fungal / bacterial leaf conditions.';
-      treatmentText.textContent = 'Apply appropriate fungicide / bactericide treatment as prescribed.';
-      preventionText.textContent = 'Maintain proper crop spacing, drip irrigation, and crop rotation.';
+      if (symptomsText) symptomsText.textContent = 'Careful monitoring of discoloration is advised.';
+      if (causesText) causesText.textContent = 'Foliar fungal or bacterial pathogens.';
+      if (treatmentText) treatmentText.textContent = 'Prune damaged leaves and avoid overhead watering.';
+      if (preventionText) preventionText.textContent = 'Maintain proper row spacing and mulch base soil.';
     }
 
-    if (treatmentPlaceholder) treatmentPlaceholder.classList.add('hidden');
-    if (treatmentContent) treatmentContent.classList.remove('hidden');
-
-    resultContent.classList.remove('hidden');
+    treatmentPlaceholder?.classList.add('hidden');
+    treatmentContent?.classList.remove('hidden');
+    treatmentCard?.classList.remove('hidden');
+    resultContent?.classList.remove('hidden');
   }
 
-  btnToggleGradcam.addEventListener('click', () => {
-    gradcamPreview.classList.toggle('hidden');
-  });
+  if (btnToggleGradcam && gradcamPreview) {
+    btnToggleGradcam.addEventListener('click', () => {
+      gradcamPreview.classList.toggle('hidden');
+    });
+  }
 
-  // Export Report PDF
-  btnDownloadReport.addEventListener('click', async () => {
-    if (!state.currentPrediction) return;
+  // --- PDF Export for Diagnostic Report ---
+  if (btnDownloadReport) {
+    btnDownloadReport.addEventListener('click', async () => {
+      if (!state.currentPrediction) return;
 
-    const payload = {
-      disease: state.currentPrediction.disease,
-      confidence: state.currentPrediction.confidence,
-      symptoms: state.currentDiseaseInfo?.symptoms || '',
-      causes: state.currentDiseaseInfo?.causes || '',
-      treatment: state.currentDiseaseInfo?.treatment || '',
-      prevention: state.currentDiseaseInfo?.prevention || '',
-      image_b64: state.currentImageBase64 || imagePreview.src || ''
-    };
+      const payload = {
+        disease: state.currentPrediction.disease,
+        confidence: state.currentPrediction.confidence,
+        symptoms: state.currentDiseaseInfo?.symptoms || '',
+        causes: state.currentDiseaseInfo?.causes || '',
+        treatment: state.currentDiseaseInfo?.treatment || '',
+        prevention: state.currentDiseaseInfo?.prevention || '',
+        image_b64: state.currentImageBase64 || imagePreview?.src || ''
+      };
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/export-report`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/export-report`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
 
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `plantexa_report_${state.currentPrediction.disease.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          const cleanName = state.currentPrediction.disease.replace(/[^a-zA-Z0-9]/g, '_');
+          a.download = `plantexa_care_sheet_${cleanName}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
+      } catch (err) {
+        alert('Could not export PDF report.');
       }
-    } catch (err) {
-      alert('Failed to export report PDF.');
-    }
-  });
+    });
+  }
 
-  btnAskAssistant.addEventListener('click', () => {
-    switchTab('assistant');
-    if (state.currentPrediction) {
-      chatInput.value = `Can you explain the best treatment steps for ${state.currentPrediction.disease}?`;
-    }
-  });
+  if (btnAskAssistant) {
+    btnAskAssistant.addEventListener('click', () => {
+      switchTab('assistant');
+      if (state.currentPrediction && chatInput) {
+        chatInput.value = `Can you suggest organic remedies and watering advice for ${state.currentPrediction.disease}?`;
+        chatInput.focus();
+      }
+    });
+  }
 
-  // --- Knowledge Base ---
+  // --- Plant Health Library (Knowledge Base) ---
   async function fetchDiseasesKnowledgeBase() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/diseases`);
       const res = await response.json();
-      if (res.success) {
+      if (res.success && res.diseases) {
         state.diseasesData = res.diseases;
         renderKnowledgeGrid(res.diseases);
       }
     } catch (err) {
-      console.error('Failed to load disease knowledge base:', err);
+      console.warn('Could not load plant health library:', err);
     }
   }
 
   function renderKnowledgeGrid(diseases) {
+    if (!knowledgeGrid) return;
     knowledgeGrid.innerHTML = '';
-    const query = knowledgeSearch.value.toLowerCase().trim();
+    const query = knowledgeSearch ? knowledgeSearch.value.toLowerCase().trim() : '';
 
     Object.keys(diseases).forEach(key => {
       const item = diseases[key];
@@ -929,79 +901,83 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const card = document.createElement('div');
-      const heading = document.createElement('h3');
-      const summary = document.createElement('p');
-      const label = document.createElement('strong');
-
       card.className = 'kb-card';
-      heading.textContent = name;
-      label.textContent = 'Symptoms: ';
-      summary.append(label, document.createTextNode(item.symptoms || 'N/A'));
-      card.append(heading, summary);
+      card.innerHTML = `
+        <h3>${name}</h3>
+        <p><strong>Symptoms:</strong> ${item.symptoms || 'Symptoms vary based on environment.'}</p>
+      `;
       card.addEventListener('click', () => openDiseaseModal(name, item));
       knowledgeGrid.appendChild(card);
     });
   }
 
-  knowledgeSearch.addEventListener('input', () => {
-    renderKnowledgeGrid(state.diseasesData);
-  });
+  if (knowledgeSearch) {
+    knowledgeSearch.addEventListener('input', () => {
+      renderKnowledgeGrid(state.diseasesData);
+    });
+  }
 
   function openDiseaseModal(title, info) {
+    if (!modalDiseaseTitle || !modalDiseaseBody || !diseaseModal) return;
     modalDiseaseTitle.textContent = title;
     modalDiseaseBody.innerHTML = '';
-    [
-      ['Symptoms', info.symptoms],
-      ['Causes', info.causes],
-      ['Treatment', info.treatment],
-      ['Prevention', info.prevention]
-    ].forEach(([label, content], index) => {
-      const section = document.createElement('div');
-      const heading = document.createElement('h4');
-      const paragraph = document.createElement('p');
 
-      section.className = 'detail-section';
-      if (index < 3) section.style.marginBottom = '12px';
-      heading.style.color = 'var(--accent-forest)';
-      heading.textContent = label;
-      paragraph.style.fontSize = '13px';
-      paragraph.textContent = content || 'Not available';
-      section.append(heading, paragraph);
-      modalDiseaseBody.appendChild(section);
+    const sections = [
+      { label: 'Symptoms', text: info.symptoms, icon: 'fa-stethoscope' },
+      { label: 'Causes', text: info.causes, icon: 'fa-circle-question' },
+      { label: 'Treatment & Care', text: info.treatment, icon: 'fa-plant-wilt' },
+      { label: 'Prevention', text: info.prevention, icon: 'fa-shield-halved' }
+    ];
+
+    sections.forEach(sec => {
+      const div = document.createElement('div');
+      div.className = 'detail-section';
+      div.innerHTML = `
+        <div class="detail-header">
+          <i class="fa-solid ${sec.icon}" aria-hidden="true"></i>
+          <h4>${sec.label}</h4>
+        </div>
+        <p>${sec.text || 'Information not available.'}</p>
+      `;
+      modalDiseaseBody.appendChild(div);
     });
+
     diseaseModal.classList.remove('hidden');
   }
 
-  btnCloseDiseaseModal.addEventListener('click', () => {
-    diseaseModal.classList.add('hidden');
-  });
+  if (btnCloseDiseaseModal && diseaseModal) {
+    btnCloseDiseaseModal.addEventListener('click', () => {
+      diseaseModal.classList.add('hidden');
+    });
+  }
 
-  renderStaticChips(i18n[state.language] || i18n.English);
-
-  // --- AI Chatbot ---
-  chatForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const prompt = chatInput.value.trim();
-    if (!prompt) return;
-    sendMessage(prompt);
-  });
-
-  chatChips.addEventListener('click', (e) => {
-    if (e.target.classList.contains('chip-btn')) {
-      const prompt = e.target.getAttribute('data-query');
+  // --- Plant Doctor Assistant (Chat) ---
+  if (chatForm) {
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const prompt = chatInput?.value.trim();
+      if (!prompt) return;
       sendMessage(prompt);
-    }
-  });
+    });
+  }
+
+  if (chatChips) {
+    chatChips.addEventListener('click', (e) => {
+      const btn = e.target.closest('.chip-btn');
+      if (btn) {
+        const query = btn.getAttribute('data-query');
+        if (query) sendMessage(query);
+      }
+    });
+  }
 
   async function sendMessage(promptText) {
-    chatInput.value = '';
+    if (chatInput) chatInput.value = '';
 
-    // Add user message
     state.chatMessages.push({ role: 'user', content: promptText });
     renderChatMessages();
 
-    // Placeholder loader
-    const loaderMsg = { role: 'assistant', content: '⏳ Plantexa AI is thinking...' };
+    const loaderMsg = { role: 'assistant', content: 'AI Assistant is thinking...' };
     state.chatMessages.push(loaderMsg);
     renderChatMessages();
 
@@ -1019,12 +995,15 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       const res = await response.json();
-      state.chatMessages.pop(); // Remove loader
+      state.chatMessages.pop(); // Remove thinking placeholder
 
       if (res.reply) {
         state.chatMessages.push({ role: 'assistant', content: res.reply });
       } else {
-        state.chatMessages.push({ role: 'assistant', content: `⚠️ ${res.error || 'No response from assistant.'}` });
+        state.chatMessages.push({
+          role: 'assistant',
+          content: res.error || 'The AI Assistant is temporarily unavailable. Please try again shortly.'
+        });
       }
 
       if (res.followups && res.followups.length > 0) {
@@ -1034,7 +1013,10 @@ document.addEventListener('DOMContentLoaded', () => {
       renderChatMessages();
     } catch (err) {
       state.chatMessages.pop();
-      state.chatMessages.push({ role: 'assistant', content: `⚠️ Error contacting chat server: ${err.message}` });
+      state.chatMessages.push({
+        role: 'assistant',
+        content: 'Network connection error while contacting AI Assistant.'
+      });
       renderChatMessages();
     }
   }
@@ -1046,12 +1028,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
-  }
-
-  function formatInlineMarkdown(value) {
-    return escapeHtml(value)
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/`(.+?)`/g, '<code>$1</code>');
   }
 
   function formatAssistantMarkdown(value) {
@@ -1071,14 +1047,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const headingMatch = trimmed.match(/^(#{1,3})\s+(.+)$/);
 
       if (listMatch) {
-        listItems.push(formatInlineMarkdown(listMatch[1]));
+        listItems.push(escapeHtml(listMatch[1]).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'));
       } else if (headingMatch) {
         flushList();
-        const level = headingMatch[1].length + 2;
-        html.push(`<h${level}>${formatInlineMarkdown(headingMatch[2])}</h${level}>`);
+        const level = headingMatch[1].length + 3;
+        html.push(`<h${level}>${escapeHtml(headingMatch[2])}</h${level}>`);
       } else if (trimmed) {
         flushList();
-        html.push(`<p>${formatInlineMarkdown(trimmed)}</p>`);
+        const formatted = escapeHtml(trimmed)
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/`(.+?)`/g, '<code>$1</code>');
+        html.push(`<p>${formatted}</p>`);
       } else {
         flushList();
       }
@@ -1089,11 +1068,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderChatMessages() {
+    if (!chatBody) return;
     chatBody.innerHTML = '';
     state.chatMessages.forEach(msg => {
       const bubble = document.createElement('div');
-      const content = document.createElement('div');
       bubble.className = `message ${msg.role === 'user' ? 'user-message' : 'assistant-message'}`;
+
+      if (msg.role === 'assistant') {
+        const avatar = document.createElement('div');
+        avatar.className = 'msg-avatar';
+        avatar.setAttribute('aria-hidden', 'true');
+        avatar.innerHTML = '<i class="fa-solid fa-robot"></i>';
+        bubble.appendChild(avatar);
+      }
+
+      const content = document.createElement('div');
       content.className = 'message-content';
       if (msg.role === 'assistant') {
         content.innerHTML = formatAssistantMarkdown(msg.content);
@@ -1107,78 +1096,95 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderFollowupChips(followups) {
+    if (!chatChips) return;
     chatChips.innerHTML = '';
     followups.forEach(q => {
       const btn = document.createElement('button');
       btn.className = 'chip-btn';
+      btn.setAttribute('type', 'button');
       btn.setAttribute('data-query', q);
       btn.textContent = q;
       chatChips.appendChild(btn);
     });
   }
 
-  btnDownloadChatPdf.addEventListener('click', async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/chat/export-pdf`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: state.chatMessages,
-          disease: state.currentPrediction?.disease || ''
-        })
-      });
+  if (btnDownloadChatPdf) {
+    btnDownloadChatPdf.addEventListener('click', async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/chat/export-pdf`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: state.chatMessages,
+            disease: state.currentPrediction?.disease || ''
+          })
+        });
 
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'plantexa_ai_chat_transcript.pdf';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'plantexa_plant_doctor_consultation.pdf';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
+      } catch (err) {
+        alert('Could not export chat PDF.');
       }
-    } catch (err) {
-      alert('Failed to export chat transcript.');
-    }
-  });
+    });
+  }
 
-  btnClearChat.addEventListener('click', () => {
-    state.chatMessages = [
-      {
-        role: 'assistant',
-        content: (i18n[state.language] || i18n.English).assistantGreeting
-      }
-    ];
-    renderChatMessages();
-    renderStaticChips(i18n[state.language] || i18n.English);
-  });
+  if (btnClearChat) {
+    btnClearChat.addEventListener('click', () => {
+      const copy = i18n[state.language] || i18n.English;
+      state.chatMessages = [
+        {
+          role: 'assistant',
+          content: copy.assistantGreeting
+        }
+      ];
+      renderChatMessages();
+      renderStaticChips(copy);
+    });
+  }
 
   // --- Profile Modal ---
-  btnProfileModal.addEventListener('click', () => {
-    profileModal.classList.remove('hidden');
-  });
+  if (btnProfileModal && profileModal) {
+    btnProfileModal.addEventListener('click', () => {
+      profileModal.classList.remove('hidden');
+    });
+  }
 
-  btnCloseProfile.addEventListener('click', () => {
-    profileModal.classList.add('hidden');
-  });
+  if (btnCloseProfile && profileModal) {
+    btnCloseProfile.addEventListener('click', () => {
+      profileModal.classList.add('hidden');
+    });
+  }
 
   avatarOptions.forEach(opt => {
     opt.addEventListener('click', () => {
-      avatarOptions.forEach(o => o.classList.remove('active'));
+      avatarOptions.forEach(o => {
+        o.classList.remove('active');
+        o.setAttribute('aria-checked', 'false');
+      });
       opt.classList.add('active');
+      opt.setAttribute('aria-checked', 'true');
     });
   });
 
-  btnSaveProfile.addEventListener('click', () => {
-    const activeOpt = document.querySelector('.avatar-option.active');
-    if (activeOpt) {
-      state.userProfile.avatar = activeOpt.getAttribute('data-avatar');
-    }
-    state.userProfile.name = usernameInput.value.trim() || 'Farmer Jyoti';
-
-    headerAvatar.textContent = state.userProfile.avatar;
-
-    profileModal.classList.add('hidden');
-  });
+  if (btnSaveProfile) {
+    btnSaveProfile.addEventListener('click', () => {
+      const activeOpt = document.querySelector('.avatar-option.active');
+      if (activeOpt) {
+        state.userProfile.avatar = activeOpt.getAttribute('data-avatar') || 'farmer';
+      }
+      if (usernameInput) {
+        state.userProfile.name = usernameInput.value.trim() || 'Farmer Jyoti';
+      }
+      updateHeaderAvatarDisplay();
+      profileModal?.classList.add('hidden');
+    });
+  }
 });
