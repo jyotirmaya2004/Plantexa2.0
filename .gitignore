@@ -2,6 +2,8 @@
 *.md
 !README.md
 !/README.md
+brain.md
+VIDEO_DEMO_SCRIPT.txt
 
 # Dependencies and builds
 node_modules/

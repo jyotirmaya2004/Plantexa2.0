@@ -372,23 +372,6 @@ body {
   border: none !important; /* No horizontal bar */
 }
 
-.hero-badge-wrap {
-  display: flex;
-}
-
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.35rem 0.85rem;
-  border-radius: var(--radius-pill);
-  background-color: var(--primary-tint);
-  color: var(--primary);
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-}
-
 .intro-title {
   font-family: var(--font-display);
   font-size: 3rem;
@@ -546,6 +529,10 @@ body {
   font-size: 1rem;
   font-weight: 500;
   color: var(--text-main);
+}
+
+.mobile-drop-text {
+  display: none;
 }
 
 .browse-link {
@@ -1148,17 +1135,6 @@ body {
   gap: 0.85rem;
 }
 
-.chat-avatar-ring {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: var(--radius-pill);
-  background-color: var(--primary-tint);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-}
-
 .chat-title strong {
   display: block;
   font-family: var(--font-display);
@@ -1206,20 +1182,6 @@ body {
   gap: 0.75rem;
   max-width: 84%;
   animation: fadeIn 0.2s ease-out;
-}
-
-.msg-avatar {
-  width: 2.15rem;
-  height: 2.15rem;
-  border-radius: var(--radius-pill);
-  background-color: var(--primary-tint);
-  color: var(--primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.95rem;
-  flex-shrink: 0;
-  margin-top: 2px;
 }
 
 .user-message {
@@ -1640,6 +1602,11 @@ body {
   box-shadow: 0 8px 26px rgba(22, 163, 74, 0.45);
 }
 
+/* Hide floating chat icon on AI Assistant page */
+body:has(#tab-assistant:not(.hidden)) .floating-chat-btn {
+  display: none !important;
+}
+
 /* ==========================================================================
    Responsive Breakpoints
    ========================================================================== */
@@ -1661,10 +1628,19 @@ body {
   .header-container {
     display: flex;
     justify-content: space-between;
-    padding: 0 1.25rem;
+    padding: 0 1.15rem;
+    height: 4.25rem;
+  }
+  
+  .brand-logo-text {
+    font-size: 1.45rem;
   }
   
   .hidden-mobile {
+    display: none !important;
+  }
+  
+  #tab-analysis .view-intro {
     display: none !important;
   }
   
@@ -1676,29 +1652,208 @@ body {
     display: none;
   }
   
+  .mobile-nav-drawer {
+    inset: 4.25rem 0 0 0;
+    padding: 1.25rem 1rem;
+  }
+  
+  .mobile-nav-link {
+    min-height: 48px;
+    padding: 0.85rem 1.15rem;
+    font-size: 0.95rem;
+  }
+  
+  .desktop-drop-text {
+    display: none !important;
+  }
+  
+  .mobile-drop-text {
+    display: block !important;
+  }
+  
+  /* Hide empty placeholder prediction card on mobile until photo is analyzed */
+  .prediction-card.is-empty,
+  .prediction-card:has(#resultPlaceholder:not(.hidden)) {
+    display: none !important;
+  }
+  
+  .dashboard-top-grid {
+    gap: 1.25rem;
+  }
+  
+  .card {
+    border-radius: var(--radius-lg);
+  }
+  
   .main-content {
-    padding: 1.75rem 1.25rem 3.5rem;
+    padding: 1.15rem 1rem 3rem;
+    gap: 1.25rem;
   }
   
   .intro-title {
+    font-size: 1.95rem;
+    line-height: 1.2;
+  }
+  
+  .intro-description {
+    font-size: 0.95rem;
+  }
+  
+  .card-header {
+    padding: 1.15rem 1.15rem 0.5rem;
+  }
+  
+  .card-header h3 {
+    font-size: 1.15rem;
+  }
+  
+  .card-body {
+    padding: 1rem 1.15rem 1.25rem;
+  }
+  
+  .dropzone {
+    min-height: 180px;
+    padding: 1.25rem 1rem;
+  }
+  
+  .dropzone-icon {
     font-size: 2.15rem;
+  }
+  
+  .drop-text {
+    font-size: 0.95rem;
+  }
+  
+  .upload-actions {
+    margin-top: 1rem;
+  }
+  
+  .btn-lg {
+    padding: 0.85rem 1.5rem;
+    font-size: 0.95rem;
+  }
+  
+  .preview-card-wrap {
+    min-height: 200px;
+  }
+  
+  .prediction-card .card-body {
+    min-height: auto;
   }
   
   .disease-details-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
   
-
   .treatment-actions {
     flex-direction: column;
     align-items: stretch;
+    gap: 0.75rem;
+  }
+  
+  .chat-container {
+    height: calc(100vh - 12.5rem);
+    min-height: 480px;
+    max-height: 650px;
+    border-radius: var(--radius-lg);
+  }
+  
+  .chat-header {
+    padding: 1rem 1.25rem;
+  }
+  
+  .chat-body {
+    padding: 1rem 1.25rem;
+  }
+  
+  .chat-bubble {
+    max-width: 90%;
+    font-size: 0.92rem;
+  }
+  
+  .chat-footer {
+    padding: 0.85rem 1.15rem;
+  }
+  
+  .modal-backdrop {
+    padding: 0.75rem;
+  }
+  
+  .modal {
+    max-width: 100%;
+    border-radius: var(--radius-lg);
+  }
+  
+  .modal-header {
+    padding: 1.25rem 1.25rem 0.75rem;
+  }
+  
+  .modal-body {
+    padding: 1rem 1.25rem;
+    max-height: 70vh;
+  }
+  
+  .modal-footer {
+    padding: 1rem 1.25rem;
   }
   
   .floating-chat-btn {
-    bottom: 1.5rem;
-    right: 1.5rem;
+    bottom: 1.25rem;
+    right: 1.25rem;
     width: 3.15rem;
     height: 3.15rem;
     font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-container {
+    padding: 0 0.85rem;
+    height: 4rem;
+  }
+  
+  .brand-logo-text {
+    font-size: 1.35rem;
+  }
+  
+  .mobile-nav-drawer {
+    inset: 4rem 0 0 0;
+  }
+  
+  .main-content {
+    padding: 1rem 0.85rem 3rem;
+  }
+  
+  .intro-title {
+    font-size: 1.65rem;
+  }
+  
+  .knowledge-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .avatar-picker {
+    grid-template-columns: 1fr;
+  }
+  
+  .mode-toggle-group {
+    width: 100%;
+  }
+  
+  .mode-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 0.5rem 0.65rem;
+    font-size: 0.82rem;
+  }
+  
+  #chatForm {
+    gap: 0.5rem;
+  }
+  
+  #btnSendChat {
+    width: 2.75rem;
+    height: 2.75rem;
   }
 }

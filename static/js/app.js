@@ -27,18 +27,18 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const AVATAR_ICONS = {
-    farmer: '<i class="fa-solid fa-tractor" aria-hidden="true"></i>',
+    farmer: '<i class="fa-solid fa-user" aria-hidden="true"></i>',
     gardener: '<i class="fa-solid fa-seedling" aria-hidden="true"></i>',
     agronomist: '<i class="fa-solid fa-wheat-awn" aria-hidden="true"></i>',
     enthusiast: '<i class="fa-solid fa-leaf" aria-hidden="true"></i>',
-    default: '<i class="fa-solid fa-user-doctor" aria-hidden="true"></i>'
+    default: '<i class="fa-solid fa-user" aria-hidden="true"></i>'
   };
 
   const i18n = {
     English: {
       htmlLang: 'en',
-      nav: ['Diagnose', 'Plant Library', 'AI Assistant', 'Care Guide'],
-      heroEyebrow: 'Plant Health Diagnostic Studio',
+      nav: ['Diagnose', 'Plant Library', 'AI Assistant', 'About'],
+      heroEyebrow: '',
       heroTitle: 'Leaf Health & Care Diagnosis',
       heroBody: 'Upload or capture a clear photo of an affected leaf to identify plant issues, explore natural treatments, and keep your garden thriving.',
       uploadTitle: 'Leaf Photo',
@@ -75,9 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
       chatPlaceholder: 'Ask a question about your plants or crops...',
       exportPdf: 'Export PDF',
       clearChat: 'Clear Chat',
-      profileTitle: 'Gardener Profile',
-      profileLabel: 'Your Name or Garden Handle',
-      profileRole: 'Your Role in the Garden',
+      profileTitle: 'Farmer Profile',
+      profileLabel: 'Your Name or Farm Handle',
+      profileRole: 'Your Role on the Farm',
       saveProfile: 'Save Profile',
       diseaseModalTitle: 'Condition Details',
       floatingChat: 'Chat with AI Assistant',
@@ -86,8 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     Hindi: {
       htmlLang: 'hi',
-      nav: ['निदान', 'पौधा पुस्तकालय', 'एआई सहायक', 'देखभाल गाइड'],
-      heroEyebrow: 'पौधा स्वास्थ्य निदान केंद्र',
+      nav: ['निदान', 'पौधा पुस्तकालय', 'एआई सहायक', 'परिचय'],
+      heroEyebrow: '',
       heroTitle: 'पत्ती स्वास्थ्य व रोग निदान',
       heroBody: 'पौधे की पत्ती का स्पष्ट फोटो लें या अपलोड करें ताकि बीमारी की तुरंत पहचान हो सके और प्राकृतिक उपचार मिल सके।',
       uploadTitle: 'पत्ती का फोटो',
@@ -124,9 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
       chatPlaceholder: 'पौधों की देखभाल संबंधी प्रश्न पूछें...',
       exportPdf: 'PDF निर्यात',
       clearChat: 'चैट साफ़ करें',
-      profileTitle: 'माली प्रोफ़ाइल',
-      profileLabel: 'आपका नाम या पहचान',
-      profileRole: 'बगीचे में आपकी भूमिका',
+      profileTitle: 'किसान प्रोफ़ाइल',
+      profileLabel: 'आपका नाम',
+      profileRole: 'खेत में आपकी भूमिका',
       saveProfile: 'प्रोफ़ाइल सहेजें',
       diseaseModalTitle: 'रोग संबंधी जानकारी',
       floatingChat: 'एआई सहायक से बातचीत करें',
@@ -135,8 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     Odia: {
       htmlLang: 'or',
-      nav: ['ନିଦାନ', 'ଉଦ୍ଭିଦ ପୁସ୍ତକାଳୟ', 'AI ସହାୟକ', 'ଯତ୍ନ ଗାଇଡ୍'],
-      heroEyebrow: 'ଉଦ୍ଭିଦ ସ୍ୱାସ୍ଥ୍ୟ ନିରୂପଣ କେନ୍ଦ୍ର',
+      nav: ['ନିଦାନ', 'ଉଦ୍ଭିଦ ପୁସ୍ତକାଳୟ', 'AI ସହାୟକ', 'ସୂଚନା'],
+      heroEyebrow: '',
       heroTitle: 'ପତ୍ର ସ୍ୱାସ୍ଥ୍ୟ ଓ ଯତ୍ନ ପରାମର୍ଶ',
       heroBody: 'ପତ୍ରର ଏକ ସ୍ପଷ୍ଟ ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ କିମ୍ବା ଉଠାନ୍ତୁ, ଯାହାଦ୍ୱାରା ରୋଗ ଚିହ୍ନଟ ହୋଇ ପ୍ରାକୃତିକ ଉପଚାର ମିଳିପାରିବ।',
       uploadTitle: 'ପତ୍ରର ଫଟୋ',
@@ -173,9 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
       chatPlaceholder: 'ଆପଣଙ୍କର ପ୍ରଶ୍ନ ପଚାରନ୍ତୁ...',
       exportPdf: 'PDF ରପ୍ତାନି',
       clearChat: 'ଚାଟ୍ ସଫା କରନ୍ତୁ',
-      profileTitle: 'ଚାଷୀ ବା ମାଳି ପ୍ରୋଫାଇଲ୍',
+      profileTitle: 'କୃଷକ ପ୍ରୋଫାଇଲ୍',
       profileLabel: 'ଆପଣଙ୍କ ନାମ',
-      profileRole: 'ଆପଣଙ୍କ ଭୂମିକା',
+      profileRole: 'ଖମାରରେ ଆପଣଙ୍କ ଭୂମିକା',
       saveProfile: 'ସଞ୍ଚୟ କରନ୍ତୁ',
       diseaseModalTitle: 'ରୋଗ ବିବରଣୀ',
       floatingChat: 'AI ସହାୟକଙ୍କ ସହ କଥା ହୁଅନ୍ତୁ',
@@ -194,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Input & Camera Elements
   const fileInput = document.getElementById('fileInput');
+  const cameraInput = document.getElementById('cameraInput');
   const dropzone = document.getElementById('dropzone');
   const dropzonePrompt = document.getElementById('dropzonePrompt');
   const previewContainer = document.getElementById('previewContainer');
@@ -209,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnRetakePhoto = document.getElementById('btnRetakePhoto');
 
   // Results Elements
+  const predictionCard = document.getElementById('predictionCard');
   const resultPlaceholder = document.getElementById('resultPlaceholder');
   const resultLoader = document.getElementById('resultLoader');
   const resultError = document.getElementById('resultError');
@@ -297,6 +299,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function switchTab(tabId) {
     navTabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-tab') === tabId));
     tabPanes.forEach(pane => pane.classList.toggle('hidden', pane.id !== `tab-${tabId}`));
+    if (floatingChatBtn) {
+      floatingChatBtn.classList.toggle('hidden', tabId === 'assistant');
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -392,10 +397,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Update Banner / Hero
-    const eyebrow = document.querySelector('#tab-analysis .intro-eyebrow, #tab-analysis .hero-badge');
+    const eyebrow = document.querySelector('#tab-analysis .intro-eyebrow, #tab-analysis .hero-badge, #tab-analysis .hero-badge-wrap');
+    if (eyebrow) eyebrow.remove();
     const title = document.querySelector('#tab-analysis .intro-title');
     const desc = document.querySelector('#tab-analysis .intro-description');
-    if (eyebrow) eyebrow.textContent = copy.heroEyebrow;
     if (title) title.textContent = copy.heroTitle;
     if (desc) desc.textContent = copy.heroBody;
 
@@ -468,8 +473,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Profile modal
     const profH3 = document.getElementById('profileModalTitle');
     const profLabel1 = document.querySelector('label[for="usernameInput"]');
+    const profLabel2 = document.querySelector('#profileModal .form-group:nth-child(2) label');
     if (profH3) profH3.textContent = copy.profileTitle;
+    if (btnProfileModal) btnProfileModal.title = copy.profileTitle;
     if (profLabel1) profLabel1.textContent = copy.profileLabel;
+    if (profLabel2) profLabel2.textContent = copy.profileRole;
 
     // Care plan action buttons
     const downRepSpan = btnDownloadReport?.querySelector('span');
@@ -520,27 +528,59 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  if (cameraInput) {
+    cameraInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (file) {
+        handleFileSelection(file);
+      }
+      btnModeFile?.classList.add('active');
+      btnModeCamera?.classList.remove('active');
+    });
+  }
+
   async function openCamera() {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      alert('Camera access is not supported by your browser.');
-      return;
+    const hasMedia = typeof navigator !== 'undefined' && 
+      navigator.mediaDevices && 
+      typeof navigator.mediaDevices.getUserMedia === 'function';
+
+    if (hasMedia && window.isSecureContext) {
+      try {
+        let stream = null;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' } },
+            audio: false
+          });
+        } catch (e1) {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false
+          });
+        }
+
+        if (stream) {
+          activeCameraStream = stream;
+          if (cameraVideo) {
+            cameraVideo.srcObject = activeCameraStream;
+            cameraVideo.play().catch(() => {});
+          }
+          dropzonePrompt?.classList.add('hidden');
+          previewContainer?.classList.add('hidden');
+          cameraPanel?.classList.remove('hidden');
+          if (fileInput) fileInput.style.pointerEvents = 'none';
+          return;
+        }
+      } catch (err) {
+        console.warn('Live camera stream unavailable, opening native camera capture:', err);
+      }
     }
 
-    try {
-      activeCameraStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' } },
-        audio: false
-      });
-      if (cameraVideo) {
-        cameraVideo.srcObject = activeCameraStream;
-      }
-      dropzonePrompt?.classList.add('hidden');
-      previewContainer?.classList.add('hidden');
-      cameraPanel?.classList.remove('hidden');
-      if (fileInput) fileInput.style.pointerEvents = 'none';
-    } catch (err) {
-      alert('Camera is unavailable or access was denied.');
-      btnModeFile?.click();
+    // Seamless fallback to device camera shutter (Works 100% on iOS Safari, Android, and non-HTTPS)
+    if (cameraInput) {
+      cameraInput.click();
+    } else if (fileInput) {
+      fileInput.click();
     }
   }
 
@@ -548,6 +588,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeCameraStream) {
       activeCameraStream.getTracks().forEach(track => track.stop());
       activeCameraStream = null;
+    }
+    if (cameraVideo) {
+      cameraVideo.srcObject = null;
     }
     if (cameraPanel) cameraPanel.classList.add('hidden');
     if (fileInput) fileInput.style.pointerEvents = 'auto';
@@ -643,6 +686,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (treatmentPlaceholder) treatmentPlaceholder.classList.add('hidden');
     if (resultContent) resultContent.classList.add('hidden');
     if (resultPlaceholder) resultPlaceholder.classList.remove('hidden');
+    if (predictionCard) predictionCard.classList.add('is-empty');
     if (resultError) resultError.classList.add('hidden');
     if (resultWarning) resultWarning.classList.add('hidden');
   }
@@ -660,10 +704,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!state.selectedFile) return;
 
       resultPlaceholder?.classList.add('hidden');
+      predictionCard?.classList.remove('is-empty');
       resultError?.classList.add('hidden');
       resultWarning?.classList.add('hidden');
       resultContent?.classList.add('hidden');
       resultLoader?.classList.remove('hidden');
+
+      if (window.innerWidth <= 768 && predictionCard) {
+        setTimeout(() => {
+          predictionCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
+      }
 
       const formData = new FormData();
       formData.append('file', state.selectedFile);
@@ -1074,13 +1125,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const bubble = document.createElement('div');
       bubble.className = `message ${msg.role === 'user' ? 'user-message' : 'assistant-message'}`;
 
-      if (msg.role === 'assistant') {
-        const avatar = document.createElement('div');
-        avatar.className = 'msg-avatar';
-        avatar.setAttribute('aria-hidden', 'true');
-        avatar.innerHTML = '<i class="fa-solid fa-robot"></i>';
-        bubble.appendChild(avatar);
-      }
 
       const content = document.createElement('div');
       content.className = 'message-content';
